@@ -3,18 +3,18 @@ package com.mobiauto.backend.interview.service.impl;
 import com.mobiauto.backend.interview.model.Oportunidade;
 import com.mobiauto.backend.interview.repository.OportunidadeRepository;
 import com.mobiauto.backend.interview.service.OportunidadeService;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.ObjectNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class OportunidadeServiceImpl implements OportunidadeService {
 
-    @Autowired
-    private OportunidadeRepository repository;
+    private final OportunidadeRepository repository;
 
     public Oportunidade findById(Long id) {
         Optional<Oportunidade> obj = repository.findById(id);
@@ -27,6 +27,27 @@ public class OportunidadeServiceImpl implements OportunidadeService {
 
     public Oportunidade save(Oportunidade obj) {
         return repository.save(obj);
+    }
+
+    @Override
+    public Oportunidade update(Long id, Oportunidade obj) {
+        Oportunidade objBanco = findById(id);
+
+        objBanco.setNomeCliente(obj.getNomeCliente());
+        objBanco.setEmailCliente(obj.getEmailCliente());
+        objBanco.setTelefoneCliente(obj.getTelefoneCliente());
+        objBanco.setMarcaVeiculo(obj.getMarcaVeiculo());
+        objBanco.setModeloVeiculo(obj.getModeloVeiculo());
+        objBanco.setVersaoVeiculo(obj.getVersaoVeiculo());
+        objBanco.setAnoVeiculo(obj.getAnoVeiculo());
+        objBanco.setStatus(obj.getStatus());
+        objBanco.setDataAtribuicao(obj.getDataAtribuicao());
+        objBanco.setDataConclusao(obj.getDataConclusao());
+        objBanco.setMotivoConclusao(obj.getMotivoConclusao());
+        objBanco.setLojaAssociada(obj.getLojaAssociada());
+        objBanco.setUsuarioAssociado(obj.getUsuarioAssociado());
+
+        return repository.save(objBanco);
     }
 
     public void delete(Long id) {

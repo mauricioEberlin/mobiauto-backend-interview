@@ -51,4 +51,10 @@ public class Oportunidade {
     @Column(name = "data_conclusao")
     private LocalDate dataConclusao;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Revenda lojaAssociada;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Usuario usuarioAssociado;
+
 }

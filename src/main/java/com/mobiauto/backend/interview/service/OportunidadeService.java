@@ -12,5 +12,7 @@ public interface OportunidadeService {
 
     Oportunidade save(Oportunidade obj);
 
+    Oportunidade update(Long id, Oportunidade obj);
+
     void delete(Long id);
 }

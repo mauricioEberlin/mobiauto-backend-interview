@@ -18,9 +18,7 @@ public class UserPrincipal {
         this.username = usuario.getEmail();
         this.password = usuario.getSenha();
 
-        this.authorities = usuario.getRoles().stream().map(role -> {
-            return new SimpleGrantedAuthority("ROLE_".concat(role.getName()));
-        }).collect(Collectors.toList());
+        this.authorities = usuario.getRoles().stream().map(role -> new SimpleGrantedAuthority("ROLE_".concat(role.getName()))).collect(Collectors.toList());
     }
 
     public static UserPrincipal create(Usuario usuario){

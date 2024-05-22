@@ -27,9 +27,12 @@ public class Usuario {
     @Column(name = "senha", nullable = false)
     private String senha;
 
-    @ManyToMany
-    private List<Role> roles;
-
     @ManyToOne(fetch = FetchType.EAGER)
     private Revenda lojaAssociada;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Oportunidade> oportunidades;
+
+    @ManyToMany
+    private List<Role> roles;
 }

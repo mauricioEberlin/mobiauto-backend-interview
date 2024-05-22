@@ -5,7 +5,6 @@ import com.mobiauto.backend.interview.model.Revenda;
 import com.mobiauto.backend.interview.service.RevendaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -35,6 +34,12 @@ public class RevendaController {
     @PostMapping("/cadastrar")
     public ResponseEntity<Object> cadastrarRevenda(@RequestBody @Validated Revenda revenda) {
         return ResponseEntity.ok(service.save(revenda));
+    }
+
+    @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<Object> editarRevenda(@PathVariable Long id, @RequestBody @Validated Revenda revenda) {
+        return ResponseEntity.ok(service.update(id, revenda));
     }
 
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")

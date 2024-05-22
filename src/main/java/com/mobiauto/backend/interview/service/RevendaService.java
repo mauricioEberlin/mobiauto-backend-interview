@@ -12,5 +12,7 @@ public interface RevendaService {
 
     Revenda save(Revenda obj);
 
+    Revenda update(Long id, Revenda obj);
+
     void delete(Long id);
 }
