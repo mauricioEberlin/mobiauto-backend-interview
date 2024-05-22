@@ -1,6 +1,7 @@
 package com.mobiauto.backend.interview.jobs;
 
 import com.mobiauto.backend.interview.config.NivelAcessoConfig;
+import com.mobiauto.backend.interview.model.Cargo;
 import com.mobiauto.backend.interview.model.Role;
 import com.mobiauto.backend.interview.model.Usuario;
 import com.mobiauto.backend.interview.service.RoleService;
@@ -28,7 +29,7 @@ public class CadastrarEntidadesJob {
                         .nome("Administrador")
                         .email("admin@email.com")
                         .senha("9090")
-                        .roles(roleService.findAll())
+                        .cargo(Cargo.ADMINISTRADOR)
                 .build());
     }
 

@@ -37,6 +37,15 @@ public class UsuarioController {
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @PostMapping("/cadastrar")
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody @Validated Usuario usuario) {
+
+        if(usuario.getId() != null){
+            return ResponseEntity.badRequest().body("O parâmetro 'id' não pode ser informado em cadastro.");
+        }
+
+        if(service.findByEmail(usuario.getEmail()) != null){
+            return ResponseEntity.badRequest().body("O email informado já possuí cadastro.");
+        }
+
         return ResponseEntity.ok(service.save(usuario));
     }
 
@@ -47,7 +56,7 @@ public class UsuarioController {
         Usuario usuarioAutenticado = getUsuarioAutenticado(auth);
 
         if(usuarioAutenticado.getLojaAssociada() == null) {
-            return ResponseEntity.status(422).body("O usuário precisa ter uma loja associada para realizar o cadastro.");
+            return ResponseEntity.badRequest().body("O usuário precisa ter uma loja associada para realizar o cadastro.");
         }
 
         //Associando a loja do usuário autenticado ao novo usuário.
@@ -71,7 +80,7 @@ public class UsuarioController {
         Long idRevendaUsuarioNovo = service.findById(id).getLojaAssociada().getId();
 
         if(!Objects.equals(idRevendaUsuarioAutenticado, idRevendaUsuarioNovo)) {
-            return ResponseEntity.status(422).body("O usuário precisa ter uma loja associada correspondente a loja do usuário à editar.");
+            return ResponseEntity.badRequest().body("O usuário precisa ter uma loja associada correspondente a loja do usuário à editar.");
         }
 
         return ResponseEntity.ok(service.update(id, usuario));

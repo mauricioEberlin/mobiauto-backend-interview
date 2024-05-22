@@ -18,7 +18,7 @@ public class Revenda {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "cnpj", nullable = false)
+    @Column(nullable = false, unique = true)
     private String cnpj;
 
     @Column(name = "nome_social", nullable = false)

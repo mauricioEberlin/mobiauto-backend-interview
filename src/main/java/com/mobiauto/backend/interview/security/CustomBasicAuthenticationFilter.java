@@ -54,7 +54,7 @@ public class CustomBasicAuthenticationFilter extends OncePerRequestFilter {
 
             if (usuario == null) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("O usuário não existe.");
+                response.getWriter().write("O usuário informado na autenticação não existe.");
                 return;
             }
 
@@ -62,7 +62,7 @@ public class CustomBasicAuthenticationFilter extends OncePerRequestFilter {
 
             if (!valid) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.getWriter().write("A senha está incorreta.");
+                response.getWriter().write("A senha informada na autenticação está incorreta.");
                 return;
             }
 

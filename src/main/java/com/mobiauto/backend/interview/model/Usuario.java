@@ -18,14 +18,17 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "nome", nullable = false)
+    @Column(nullable = false)
     private String nome;
 
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "senha", nullable = false)
+    @Column(nullable = false)
     private String senha;
+
+    @Column(nullable = false)
+    private Cargo cargo;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Revenda lojaAssociada;

@@ -33,6 +33,15 @@ public class RevendaController {
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @PostMapping("/cadastrar")
     public ResponseEntity<Object> cadastrarRevenda(@RequestBody @Validated Revenda revenda) {
+
+        if(revenda.getId() != null){
+            return ResponseEntity.badRequest().body("O parâmetro 'id' não pode ser informado em cadastro.");
+        }
+
+        if(service.findByCnpj(revenda.getCnpj()) != null){
+            return ResponseEntity.badRequest().body("O CNPJ informado já possuí cadastro.");
+        }
+
         return ResponseEntity.ok(service.save(revenda));
     }
 

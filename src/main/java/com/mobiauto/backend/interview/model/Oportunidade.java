@@ -18,11 +18,8 @@ public class Oportunidade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "status", nullable = false)
+    @Column(nullable = false)
     private Status status;
-
-    @Column(name = "motivo_conclusao")
-    private String motivoConclusao;
 
     @Column(name = "nome_cliente", nullable = false)
     private String nomeCliente;
@@ -50,6 +47,9 @@ public class Oportunidade {
 
     @Column(name = "data_conclusao")
     private LocalDate dataConclusao;
+
+    @Column(name = "motivo_conclusao")
+    private String motivoConclusao;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Revenda lojaAssociada;

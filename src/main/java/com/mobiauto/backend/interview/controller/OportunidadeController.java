@@ -59,7 +59,7 @@ public class OportunidadeController {
         Long idRevendaUsuarioNovo = service.findById(id).getLojaAssociada().getId();
 
         if(!Objects.equals(idRevendaUsuarioNovo, idRevendaUsuarioAutenticado)){
-            return ResponseEntity.status(422).body("O usuário deve ter uma loja associada correspondente a loja da oportunidade à editar");
+            return ResponseEntity.badRequest().body("O usuário deve ter uma loja associada correspondente a loja da oportunidade à editar");
         }
 
         return ResponseEntity.ok(service.update(id, oportunidade));
@@ -75,11 +75,11 @@ public class OportunidadeController {
         Long idUsuarioAssociadoOportunidadeNovo = oportunidade.getUsuarioAssociado().getId();
 
         if(!Objects.equals(idUsuarioAutenticado, idUsuarioAssociadoOportunidade)){
-            return ResponseEntity.status(422).body("O usuário pode editar somente as oportunidades associadas à ele mesmo.");
+            return ResponseEntity.badRequest().body("O usuário pode editar somente as oportunidades associadas à ele mesmo.");
         }
 
         if(!Objects.equals(idUsuarioAssociadoOportunidade, idUsuarioAssociadoOportunidadeNovo)){
-            return ResponseEntity.status(422).body("O usuário não pode transferir a oportunidade para outro usuário");
+            return ResponseEntity.badRequest().body("O usuário não pode transferir a oportunidade para outro usuário");
         }
 
         return ResponseEntity.ok(service.update(id, oportunidade));

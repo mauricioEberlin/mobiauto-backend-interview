@@ -21,11 +21,24 @@ public class RevendaServiceImpl implements RevendaService {
         return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado. Id: " + id + ", Tipo: " + Revenda.class.getName(), obj));
     }
 
+    public Revenda findByCnpj(String cnpj) {
+        return repository.findByCnpj(cnpj);
+    }
+
     public List<Revenda> findAll() {
         return repository.findAll();
     }
 
     public Revenda save(Revenda obj) {
+
+        if(obj.getId() != null){
+            throw new Error("Tentativa de passar ID em cadastro");
+        }
+
+        if(findByCnpj(obj.getCnpj()) != null){
+            throw new Error("O CNPJ informado já possuí cadastro");
+        }
+
         return repository.save(obj);
     }
 

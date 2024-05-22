@@ -26,6 +26,11 @@ public class OportunidadeServiceImpl implements OportunidadeService {
     }
 
     public Oportunidade save(Oportunidade obj) {
+
+        if(obj.getId() != null){
+            throw new Error("Tentativa de passar ID em cadastro");
+        }
+
         return repository.save(obj);
     }
 
