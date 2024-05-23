@@ -4,7 +4,6 @@ import com.mobiauto.backend.interview.model.Revenda;
 import com.mobiauto.backend.interview.repository.RevendaRepository;
 import com.mobiauto.backend.interview.service.RevendaService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class RevendaServiceImpl implements RevendaService {
 
     public Revenda findById(Long id) {
         Optional<Revenda> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado. Id: " + id + ", Tipo: " + Revenda.class.getName(), obj));
+        return obj.orElse(null);
     }
 
     public Revenda findByCnpj(String cnpj) {
@@ -46,8 +45,6 @@ public class RevendaServiceImpl implements RevendaService {
         Revenda objBanco = findById(id);
 
         objBanco.setCnpj(obj.getCnpj());
-        objBanco.setFuncionarios(obj.getFuncionarios());
-        objBanco.setOportunidades(obj.getOportunidades());
         objBanco.setNomeSocial(obj.getNomeSocial());
 
         return repository.save(objBanco);

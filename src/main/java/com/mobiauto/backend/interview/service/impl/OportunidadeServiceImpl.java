@@ -4,7 +4,6 @@ import com.mobiauto.backend.interview.model.Oportunidade;
 import com.mobiauto.backend.interview.repository.OportunidadeRepository;
 import com.mobiauto.backend.interview.service.OportunidadeService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class OportunidadeServiceImpl implements OportunidadeService {
 
     public Oportunidade findById(Long id) {
         Optional<Oportunidade> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado. Id: " + id + ", Tipo: " + Oportunidade.class.getName(), obj));
+        return obj.orElse(null);
     }
 
     public List<Oportunidade> findAll() {

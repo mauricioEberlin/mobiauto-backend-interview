@@ -12,6 +12,8 @@ public interface UsuarioService {
 
     List<Usuario> findAll();
 
+    List<Usuario> findAllInRevenda(Long idRevenda);
+
     Usuario save(Usuario obj);
 
     Usuario update(Long id, Usuario obj);

@@ -3,8 +3,6 @@ package com.mobiauto.backend.interview.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,11 +21,5 @@ public class Revenda {
 
     @Column(name = "nome_social", nullable = false)
     private String nomeSocial;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Oportunidade> oportunidades;
-
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Usuario> funcionarios;
 
 }

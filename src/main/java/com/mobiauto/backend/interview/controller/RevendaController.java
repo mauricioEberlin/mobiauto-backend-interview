@@ -10,6 +10,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/revendas")
 @RequiredArgsConstructor
@@ -27,35 +29,63 @@ public class RevendaController {
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> buscarRevendaPorId(@PathVariable Long id) {
-        return ResponseEntity.ok(service.findById(id));
+        Revenda revendaBuscada = service.findById(id);
+
+        return (revendaBuscada != null) ? ResponseEntity.ok(revendaBuscada) : ResponseEntity.notFound().build();
     }
 
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @PostMapping("/cadastrar")
     public ResponseEntity<Object> cadastrarRevenda(@RequestBody @Validated Revenda revenda) {
+        ResponseEntity<Object> erro = validarRevenda(true, revenda, null);
 
-        if(revenda.getId() != null){
-            return ResponseEntity.badRequest().body("O parâmetro 'id' não pode ser informado em cadastro.");
-        }
-
-        if(service.findByCnpj(revenda.getCnpj()) != null){
-            return ResponseEntity.badRequest().body("O CNPJ informado já possuí cadastro.");
-        }
-
-        return ResponseEntity.ok(service.save(revenda));
+        return (erro == null) ? ResponseEntity.ok(service.save(revenda)) : erro;
     }
 
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @PutMapping("/editar/{id}")
     public ResponseEntity<Object> editarRevenda(@PathVariable Long id, @RequestBody @Validated Revenda revenda) {
-        return ResponseEntity.ok(service.update(id, revenda));
+        ResponseEntity<Object> erro = validarRevenda(false, revenda, id);
+
+        return (erro == null) ? ResponseEntity.ok(service.update(id, revenda)) : erro;
     }
 
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @DeleteMapping("/deletar/{id}")
-    public ResponseEntity<Void> deletarRevendaPorId(@PathVariable Long id) {
+    public ResponseEntity<Object> deletarRevendaPorId(@PathVariable Long id) {
+        boolean existe = service.findById(id) != null;
         service.delete(id);
-        return ResponseEntity.noContent().build();
+
+        return (existe) ? ResponseEntity.ok().body("Revenda deletada com sucesso.") : ResponseEntity.notFound().build();
+    }
+
+    private ResponseEntity<Object> validarRevenda(boolean isCadastro, Revenda revenda, Long id) {
+        ResponseEntity<Object> erro = null;
+
+        Revenda revendaPorCnpj = service.findByCnpj(revenda.getCnpj());
+
+        // Validando se o usuário está tentando passar o 'id' no corpo da requisição.
+        if(revenda.getId() != null) {
+            erro = ResponseEntity.badRequest().body("O parâmetro 'id' não pode ser informado no cadastro.");
+        }
+
+        if(isCadastro){
+            // Validando se o CNPJ já existe no banco de dados ao cadastrar.
+            if(revendaPorCnpj != null) {
+                erro = ResponseEntity.badRequest().body("O CNPJ informado já possuí cadastro.");
+            }
+        }else{
+            // Validando se o CNPJ já existe no banco de dados e desconsiderando o próprio.
+            if(revendaPorCnpj != null && !Objects.equals(id, revendaPorCnpj.getId())){
+                erro = ResponseEntity.badRequest().body("O CNPJ informado já possuí cadastro.");
+            }
+            // Validando se o usuário está tentando alterar uma revenda que não existe.
+            if(service.findById(id) == null){
+                erro = ResponseEntity.notFound().build();
+            }
+        }
+
+        return erro;
     }
 
 }

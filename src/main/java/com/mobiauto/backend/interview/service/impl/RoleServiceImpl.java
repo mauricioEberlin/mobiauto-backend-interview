@@ -4,7 +4,6 @@ import com.mobiauto.backend.interview.model.Role;
 import com.mobiauto.backend.interview.repository.RoleRepository;
 import com.mobiauto.backend.interview.service.RoleService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class RoleServiceImpl implements RoleService {
 
     public Role findById(Long id) {
         Optional<Role> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado. Id: " + id + ", Tipo: " + Role.class.getName(), obj));
+        return obj.orElse(null);
     }
 
     public List<Role> findAll() {

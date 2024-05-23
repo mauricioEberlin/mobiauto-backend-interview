@@ -6,11 +6,11 @@ import com.mobiauto.backend.interview.repository.RoleRepository;
 import com.mobiauto.backend.interview.repository.UsuarioRepository;
 import com.mobiauto.backend.interview.service.UsuarioService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -27,7 +27,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     public Usuario findById(Long id) {
         Optional<Usuario> obj = repository.findById(id);
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não encontrado. Id: " + id + ", Tipo: " + Usuario.class.getName(), obj));
+
+        return obj.orElse(null);
     }
 
     public Usuario findByEmail(String email) {
@@ -36,6 +37,21 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     public List<Usuario> findAll() {
         return repository.findAll();
+    }
+
+    public List<Usuario> findAllInRevenda(Long idRevenda) {
+
+        List<Usuario> allInRevenda = new ArrayList<>();
+
+        for (Usuario usuario : repository.findAll()) {
+            if(usuario.getLojaAssociada() != null){
+                if(Objects.equals(usuario.getLojaAssociada().getId(), idRevenda)){
+                    allInRevenda.add(usuario);
+                }
+            }
+        }
+
+        return allInRevenda;
     }
 
     public Usuario save(Usuario obj) {
@@ -49,14 +65,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         obj.setSenha(passwordEncoder().encode(obj.getSenha()));
-
-        Map<Cargo, Integer> map = new HashMap<>();
-        map.put(Cargo.ADMINISTRADOR, 0);
-        map.put(Cargo.PROPRIETARIO, 1);
-        map.put(Cargo.GERENTE, 2);
-        map.put(Cargo.ASSISTENTE, 3);
-
-        obj.setRoles(roleRepository.findAll().subList(map.get(obj.getCargo()), 4));
+        obj.setHorarioUltimaOportunidade(Instant.MIN);
+        obj.setRoles(roleRepository.findAll().subList(mapCargoRole().get(obj.getCargo()), 4));
 
         return repository.save(obj);
     }
@@ -64,16 +74,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     public Usuario update(Long id, Usuario obj) {
         Usuario objBanco = findById(id);
 
-        if(findByEmail(obj.getEmail()) == null){
-            objBanco.setEmail((obj.getEmail()));
+        if(obj.getId() != null){
+            throw new Error("Tentativa de passar ID ao editar.");
         }
 
+        obj.setSenha(passwordEncoder().encode(obj.getSenha()));
+        obj.setRoles(roleRepository.findAll().subList(mapCargoRole().get(obj.getCargo()), 4));
+
+        objBanco.setEmail((obj.getEmail()));
         objBanco.setNome(obj.getNome());
-        objBanco.setSenha(obj.getSenha());
         objBanco.setLojaAssociada(obj.getLojaAssociada());
-        objBanco.setOportunidades(obj.getOportunidades());
         objBanco.setCargo(obj.getCargo());
-        objBanco.setRoles(obj.getRoles());
 
         return repository.save(objBanco);
     }
@@ -81,6 +92,17 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void delete(Long id) {
         findById(id);
         repository.deleteById(id);
+    }
+
+    private Map<Cargo, Integer> mapCargoRole() {
+
+        Map<Cargo, Integer> map = new HashMap<>();
+        map.put(Cargo.ADMINISTRADOR, 0);
+        map.put(Cargo.PROPRIETARIO, 1);
+        map.put(Cargo.GERENTE, 2);
+        map.put(Cargo.ASSISTENTE, 3);
+
+        return map;
     }
 
 }

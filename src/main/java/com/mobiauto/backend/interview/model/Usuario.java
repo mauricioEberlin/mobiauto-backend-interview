@@ -3,6 +3,7 @@ package com.mobiauto.backend.interview.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @Getter
@@ -33,8 +34,8 @@ public class Usuario {
     @ManyToOne(fetch = FetchType.EAGER)
     private Revenda lojaAssociada;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private List<Oportunidade> oportunidades;
+    @Column(name = "horario_ultima_oportunidade")
+    private Instant horarioUltimaOportunidade;
 
     @ManyToMany
     private List<Role> roles;
