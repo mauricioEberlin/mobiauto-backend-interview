@@ -10,6 +10,7 @@ public interface OportunidadeService {
 
     List<Oportunidade> findAll();
 
+    List<Oportunidade> findAllInRevenda(Long idRevenda);
     Oportunidade save(Oportunidade obj);
 
     Oportunidade update(Long id, Oportunidade obj);

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,18 +41,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     public List<Usuario> findAllInRevenda(Long idRevenda) {
-
-        List<Usuario> allInRevenda = new ArrayList<>();
-
-        for (Usuario usuario : repository.findAll()) {
-            if(usuario.getLojaAssociada() != null){
-                if(Objects.equals(usuario.getLojaAssociada().getId(), idRevenda)){
-                    allInRevenda.add(usuario);
-                }
-            }
-        }
-
-        return allInRevenda;
+        return repository.findAll().stream().filter(u -> Objects.equals((u.getLojaAssociada() != null) ? u.getLojaAssociada().getId() : null, idRevenda)).collect(Collectors.toList());
     }
 
     public Usuario save(Usuario obj) {

@@ -1,9 +1,13 @@
 package com.mobiauto.backend.interview.controller;
 
 import com.mobiauto.backend.interview.config.NivelAcessoConfig;
+import com.mobiauto.backend.interview.model.Revenda;
 import com.mobiauto.backend.interview.model.Usuario;
 import com.mobiauto.backend.interview.security.UserPrincipal;
 import com.mobiauto.backend.interview.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,19 +19,40 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/api/usuarios")
+@RequestMapping(value = "/api/usuarios", produces = {"application/json"})
 @RequiredArgsConstructor
 @Tag(name = "Usuarios")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Operação executada com sucesso."),
+        @ApiResponse(responseCode = "400", description = "Algum parâmetro foi inválido."),
+        @ApiResponse(responseCode = "401", description = "O campo 'usuário' ou 'senha' na autenticação está incorreta."),
+        @ApiResponse(responseCode = "403", description = "O usuário não tem permissão para usar essa rota."),
+        @ApiResponse(responseCode = "404", description = "O usuário não existe.")
+
+})
 public class UsuarioController {
 
     private final UsuarioService service;
 
+    @Operation(summary = "Realiza a busca de todos os usuários cadastrados", description = NivelAcessoConfig.NIVEL_ADMINISTRADOR)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
-    @GetMapping
     public ResponseEntity<Object> buscarUsuarios() {
         return ResponseEntity.ok(service.findAll());
     }
 
+    @Operation(summary = "Realiza a busca de todos os usuários cadastrados na revendedora do usuário autenticado.", description = NivelAcessoConfig.NIVEL_GERENTE)
+    @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_GERENTE + "')")
+    @GetMapping("/revenda")
+    public ResponseEntity<Object> buscarUsuariosDaRevenda(Authentication auth) {
+
+        Revenda revendaUsuarioAutenticado = getUsuarioAutenticado(auth).getLojaAssociada();
+
+        return (revendaUsuarioAutenticado != null) ?
+                ResponseEntity.ok(service.findAllInRevenda(revendaUsuarioAutenticado.getId())) :
+                ResponseEntity.badRequest().body("O usuário precisa ter uma loja associada para realizar a busca.");
+    }
+
+    @Operation(summary = "Realiza a busca de um usuário a partir do seu ID.", description = NivelAcessoConfig.NIVEL_ADMINISTRADOR)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> buscarUsuarioPorId(@PathVariable Long id) {
@@ -37,6 +62,7 @@ public class UsuarioController {
         return (usuarioBuscado != null) ? ResponseEntity.ok(usuarioBuscado) : ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Realiza o cadastro de um usuário.", description = NivelAcessoConfig.NIVEL_ADMINISTRADOR)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @PostMapping("/cadastrar")
     public ResponseEntity<Object> cadastrarUsuario(@RequestBody @Validated Usuario usuario) {
@@ -45,6 +71,7 @@ public class UsuarioController {
         return (erro == null) ? ResponseEntity.ok(service.save(usuario)) : erro;
     }
 
+    @Operation(summary = "Realiza o cadastro de um usuário na revendedora do usuário autenticado.", description = NivelAcessoConfig.NIVEL_GERENTE)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_GERENTE + "')")
     @PostMapping("/cadastrar/revenda")
     public ResponseEntity<Object> cadastrarUsuarioEmRevenda(@RequestBody @Validated Usuario usuario, Authentication auth) {
@@ -62,6 +89,7 @@ public class UsuarioController {
         return (erro == null) ? ResponseEntity.ok(service.save(usuario)) : erro;
     }
 
+    @Operation(summary = "Realiza a edição do usuário a partir de seu ID.", description = NivelAcessoConfig.NIVEL_ADMINISTRADOR)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @PutMapping("/editar/{id}")
     public ResponseEntity<Object> editarUsuario(@PathVariable Long id, @RequestBody @Validated Usuario usuario) {
@@ -70,6 +98,7 @@ public class UsuarioController {
         return (erro == null) ? ResponseEntity.ok(service.update(id, usuario)) : erro;
     }
 
+    @Operation(summary = "Realiza a edição do usuário a partir de seu ID. Essa rota também valida se o usuário autenticado está na mesma revendedora.", description = NivelAcessoConfig.NIVEL_PROPRIETARIO)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_PROPRIETARIO + "')")
     @PutMapping("/editar/revenda/{id}")
     public ResponseEntity<Object> editarUsuarioEmRevenda(@PathVariable Long id, @RequestBody @Validated Usuario usuario, Authentication auth) {
@@ -86,6 +115,7 @@ public class UsuarioController {
         return (erro == null) ? ResponseEntity.ok(service.update(id, usuario)) : erro;
     }
 
+    @Operation(summary = "Deleta o usuário a partir do seu ID.", description = NivelAcessoConfig.NIVEL_ADMINISTRADOR)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
     @DeleteMapping("/deletar/{id}")
     public ResponseEntity<Object> deletarUsuarioPorId(@PathVariable Long id) {
