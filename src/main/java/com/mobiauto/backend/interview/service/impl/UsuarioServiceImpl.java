@@ -1,6 +1,6 @@
 package com.mobiauto.backend.interview.service.impl;
 
-import com.mobiauto.backend.interview.model.Cargo;
+import com.mobiauto.backend.interview.model.Role;
 import com.mobiauto.backend.interview.model.Usuario;
 import com.mobiauto.backend.interview.repository.RoleRepository;
 import com.mobiauto.backend.interview.repository.UsuarioRepository;
@@ -18,18 +18,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UsuarioServiceImpl implements UsuarioService {
 
-    private PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-
     private final UsuarioRepository repository;
 
     private final RoleRepository roleRepository;
 
     public Usuario findById(Long id) {
-        Optional<Usuario> obj = repository.findById(id);
-
-        return obj.orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public Usuario findByEmail(String email) {
@@ -46,6 +40,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     public Usuario save(Usuario obj) {
 
+        List<Role> roles = roleRepository.findAll();
+
         if (findByEmail(obj.getEmail()) != null){
             throw new Error("Esse e-mail já possuí cadastro.");
         }
@@ -56,7 +52,7 @@ public class UsuarioServiceImpl implements UsuarioService {
 
         obj.setSenha(passwordEncoder().encode(obj.getSenha()));
         obj.setHorarioUltimaOportunidade(Instant.MIN);
-        obj.setRoles(roleRepository.findAll().subList(mapCargoRole().get(obj.getCargo()), 4));
+        obj.setRoles(roles.subList(obj.getCargo().ordinal(), roles.size()));
 
         return repository.save(obj);
     }
@@ -69,7 +65,7 @@ public class UsuarioServiceImpl implements UsuarioService {
         }
 
         obj.setSenha(passwordEncoder().encode(obj.getSenha()));
-        obj.setRoles(roleRepository.findAll().subList(mapCargoRole().get(obj.getCargo()), 4));
+        obj.setRoles(roleRepository.findAll().subList(obj.getCargo().ordinal(), 4));
 
         objBanco.setEmail((obj.getEmail()));
         objBanco.setNome(obj.getNome());
@@ -84,15 +80,8 @@ public class UsuarioServiceImpl implements UsuarioService {
         repository.deleteById(id);
     }
 
-    private Map<Cargo, Integer> mapCargoRole() {
-
-        Map<Cargo, Integer> map = new HashMap<>();
-        map.put(Cargo.ADMINISTRADOR, 0);
-        map.put(Cargo.PROPRIETARIO, 1);
-        map.put(Cargo.GERENTE, 2);
-        map.put(Cargo.ASSISTENTE, 3);
-
-        return map;
+    private PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 }
