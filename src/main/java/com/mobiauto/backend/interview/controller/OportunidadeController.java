@@ -17,8 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.Objects;
 
@@ -78,7 +76,6 @@ public class OportunidadeController {
 
         if(usuarioAssociado != null){
             usuarioAssociado.setHorarioUltimaOportunidade(Instant.now());
-            oportunidade.setDataAtribuicao(LocalDate.now(ZoneId.of("BET")));
         }
 
         return (erro == null) ? ResponseEntity.ok(service.save(oportunidade)) : erro;
@@ -133,7 +130,7 @@ public class OportunidadeController {
         Long idRevendaUsuarioAutenticado = (usuarioAutenticado.getLojaAssociada() != null) ? usuarioAutenticado.getLojaAssociada().getId() : null;
 
         if(!Objects.equals(id, idRevendaUsuarioAutenticado)){
-            erro = ResponseEntity.badRequest().body("O usuário deve ter uma loja associada correspondente o da loja da oportunidade à editar");
+            erro = ResponseEntity.badRequest().body("O usuário deve ter uma loja associada correspondente o da loja da oportunidade à editar.");
         }
 
         return (erro == null) ? ResponseEntity.ok(service.update(id, oportunidade)) : erro;
@@ -148,7 +145,8 @@ public class OportunidadeController {
 
         if(erro == null) {
             Long idUsuarioAutenticado = getUsuarioAutenticado(userPrincipal).getId();
-            Long idUsuarioOportunidade = (service.findById(id).getUsuarioAssociado() != null) ? service.findById(id).getUsuarioAssociado().getId() : null;
+            Usuario usuarioOportunidade = service.findById(id).getUsuarioAssociado();
+            Long idUsuarioOportunidade = (usuarioOportunidade != null) ? usuarioOportunidade.getId() : null;
             Long idUsuarioOportunidadeNovo = (oportunidade.getUsuarioAssociado() != null) ? oportunidade.getUsuarioAssociado().getId() : null;
 
             if(!Objects.equals(idUsuarioAutenticado, idUsuarioOportunidade)){
@@ -156,7 +154,7 @@ public class OportunidadeController {
             }
 
             if(!Objects.equals(idUsuarioOportunidade, idUsuarioOportunidadeNovo)){
-                erro =  ResponseEntity.badRequest().body("O assistente não pode transferir a oportunidade para outro usuário");
+                erro =  ResponseEntity.badRequest().body("O assistente não pode transferir a oportunidade para outro usuário.");
             }
         }
 
