@@ -36,6 +36,7 @@ public class UsuarioController {
 
     @Operation(summary = "Realiza a busca de todos os usuários cadastrados", description = NivelAcessoConfig.NIVEL_ADMINISTRADOR)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ADMINISTRADOR + "')")
+    @GetMapping
     public ResponseEntity<Object> buscarUsuarios() {
         return ResponseEntity.ok(service.findAll());
     }

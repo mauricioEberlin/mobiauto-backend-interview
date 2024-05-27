@@ -37,7 +37,7 @@ public class OportunidadeControllerTest {
 
     Usuario usuario, usuario2;
 
-    Revenda revenda;
+    Revenda revenda, revenda2;
 
     UserPrincipal userPrincipal;
 
@@ -60,6 +60,12 @@ public class OportunidadeControllerTest {
                 .nomeSocial("Revendedora Teste")
                 .build();
 
+        revenda2 = Revenda.builder()
+                .id(2L)
+                .cnpj("432432557")
+                .nomeSocial("Revendedora Teste")
+                .build();
+
         usuario = Usuario.builder()
                 .id(1L)
                 .nome("teste")
@@ -77,7 +83,7 @@ public class OportunidadeControllerTest {
                 .email("teste2@email.com")
                 .senha("123")
                 .cargo(Cargo.ASSISTENTE)
-                .lojaAssociada(revenda)
+                .lojaAssociada(revenda2)
                 .roles(roles)
                 .horarioUltimaOportunidade(Instant.MIN)
                 .build();
@@ -231,22 +237,22 @@ public class OportunidadeControllerTest {
     void editarOportunidadeEmRevenda() {
         when(service.findById(oportunidadeComId.getId())).thenReturn(oportunidade);
         when(usuarioService.findByEmail(usuario.getEmail())).thenReturn(usuario);
+        when(service.findById(oportunidadeComId.getId())).thenReturn(oportunidade);
         when(service.update(oportunidadeComId.getId(), oportunidade)).thenReturn(oportunidadeComId);
 
         ResponseEntity<Object> responseOportunidade = controller.editarOportunidadeEmRevenda(oportunidadeComId.getId(), oportunidade, userPrincipal);
 
         assertEquals(ResponseEntity.ok(oportunidadeComId), responseOportunidade);
 
-        verify(service).findById(oportunidadeComId.getId());
+        verify(service, times(2)).findById(oportunidadeComId.getId());
         verify(service).update(oportunidadeComId.getId(), oportunidade);
         verifyNoMoreInteractions(service);
 
         verify(usuarioService).findByEmail(usuario.getEmail());
         verifyNoMoreInteractions(usuarioService);
 
-        when(usuarioService.findByEmail(usuario.getEmail())).thenReturn(usuario);
-        when(service.findById(oportunidade.getId())).thenReturn(oportunidade).thenReturn(oportunidadeComId);
-
+        when(usuarioService.findByEmail(usuario.getEmail())).thenReturn(usuario2);
+        when(service.findById(oportunidade.getId())).thenReturn(oportunidade).thenReturn(oportunidade);
         responseOportunidade = controller.editarOportunidadeEmRevenda(oportunidade.getId(), oportunidade, userPrincipal);
         assertEquals(ResponseEntity.badRequest().body("O usuário deve ter uma loja associada correspondente o da loja da oportunidade à editar."), responseOportunidade);
     }

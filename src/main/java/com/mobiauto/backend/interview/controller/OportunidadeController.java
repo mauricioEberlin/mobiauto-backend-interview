@@ -128,8 +128,9 @@ public class OportunidadeController {
         ResponseEntity<Object> erro = validarOportunidade(false, oportunidade, id);
         Usuario usuarioAutenticado = getUsuarioAutenticado(userPrincipal);
         Long idRevendaUsuarioAutenticado = (usuarioAutenticado.getLojaAssociada() != null) ? usuarioAutenticado.getLojaAssociada().getId() : null;
+        Long idRevendaOportunidade = service.findById(id).getLojaAssociada().getId();
 
-        if(!Objects.equals(id, idRevendaUsuarioAutenticado)){
+        if(!Objects.equals(idRevendaOportunidade, idRevendaUsuarioAutenticado)){
             erro = ResponseEntity.badRequest().body("O usuário deve ter uma loja associada correspondente o da loja da oportunidade à editar.");
         }
 

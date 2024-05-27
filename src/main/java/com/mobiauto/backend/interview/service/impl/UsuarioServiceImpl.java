@@ -61,9 +61,11 @@ public class UsuarioServiceImpl implements UsuarioService {
         Usuario objBanco = findById(id);
         List<Role> roles = roleRepository.findAll();
 
-        objBanco.setSenha(passwordEncoder().encode(obj.getSenha()));
-        objBanco.setRoles(roles.subList(obj.getCargo().ordinal(), roles.size()));
+        if(obj.getSenha() != null){
+            objBanco.setSenha(passwordEncoder().encode(obj.getSenha()));
+        }
 
+        objBanco.setRoles(roles.subList(obj.getCargo().ordinal(), roles.size()));
         objBanco.setEmail((obj.getEmail()));
         objBanco.setNome(obj.getNome());
         objBanco.setLojaAssociada(obj.getLojaAssociada());
