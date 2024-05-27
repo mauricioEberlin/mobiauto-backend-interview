@@ -16,8 +16,7 @@ public class RevendaServiceImpl implements RevendaService {
     private final RevendaRepository repository;
 
     public Revenda findById(Long id) {
-        Optional<Revenda> obj = repository.findById(id);
-        return obj.orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public Revenda findByCnpj(String cnpj) {
@@ -31,11 +30,7 @@ public class RevendaServiceImpl implements RevendaService {
     public Revenda save(Revenda obj) {
 
         if(obj.getId() != null){
-            throw new Error("Tentativa de passar ID em cadastro");
-        }
-
-        if(findByCnpj(obj.getCnpj()) != null){
-            throw new Error("O CNPJ informado já possuí cadastro");
+            throw new Error("Tentativa de passar ID em cadastro.");
         }
 
         return repository.save(obj);
@@ -51,7 +46,6 @@ public class RevendaServiceImpl implements RevendaService {
     }
 
     public void delete(Long id) {
-        findById(id);
         repository.deleteById(id);
     }
 

@@ -39,15 +39,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     public Usuario save(Usuario obj) {
-
         List<Role> roles = roleRepository.findAll();
 
-        if (findByEmail(obj.getEmail()) != null){
-            throw new Error("Esse e-mail já possuí cadastro.");
-        }
-
         if(obj.getId() != null){
-            throw new Error("Tentativa de passar ID em cadastro");
+            throw new Error("Tentativa de passar ID em cadastro.");
         }
 
         obj.setSenha(passwordEncoder().encode(obj.getSenha()));
@@ -58,14 +53,16 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     public Usuario update(Long id, Usuario obj) {
-        Usuario objBanco = findById(id);
 
         if(obj.getId() != null){
             throw new Error("Tentativa de passar ID ao editar.");
         }
 
-        obj.setSenha(passwordEncoder().encode(obj.getSenha()));
-        obj.setRoles(roleRepository.findAll().subList(obj.getCargo().ordinal(), 4));
+        Usuario objBanco = findById(id);
+        List<Role> roles = roleRepository.findAll();
+
+        objBanco.setSenha(passwordEncoder().encode(obj.getSenha()));
+        objBanco.setRoles(roles.subList(obj.getCargo().ordinal(), roles.size()));
 
         objBanco.setEmail((obj.getEmail()));
         objBanco.setNome(obj.getNome());
@@ -76,7 +73,6 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     public void delete(Long id) {
-        findById(id);
         repository.deleteById(id);
     }
 

@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,9 +49,9 @@ public class OportunidadeController {
     @Operation(summary = "Realiza a busca de todas as oportunidades associadas à mesma revendedora do usuário autenticado.", description = NivelAcessoConfig.NIVEL_ASSISTENTE)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ASSISTENTE + "')")
     @GetMapping("/revenda")
-    public ResponseEntity<Object> buscarOportunidadesDaRevenda(Authentication auth) {
+    public ResponseEntity<Object> buscarOportunidadesDaRevenda(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        Revenda revendaUsuarioAutenticado = getUsuarioAutenticado(auth).getLojaAssociada();
+        Revenda revendaUsuarioAutenticado = getUsuarioAutenticado(userPrincipal).getLojaAssociada();
 
         return (revendaUsuarioAutenticado != null) ?
                 ResponseEntity.ok(service.findAllInRevenda(revendaUsuarioAutenticado.getId())) :
@@ -87,10 +87,10 @@ public class OportunidadeController {
     @Operation(summary = "Realiza o cadastro de uma oportunidade na mesma revendedora do usuário autenticado. Com validação e distribuição da oportunidade ao usuário de cargo ASSISTENTE com mais ociosidade", description = NivelAcessoConfig.NIVEL_ASSISTENTE)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ASSISTENTE + "')")
     @PostMapping("/atender")
-    public ResponseEntity<Object> atenderOportunidade(@RequestBody @Validated Oportunidade oportunidade, Authentication auth) {
+    public ResponseEntity<Object> atenderOportunidade(@RequestBody @Validated Oportunidade oportunidade, @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         ResponseEntity<Object> erro = validarOportunidade(true, oportunidade, null);
-        Revenda revendaUsuarioAutenticado = getUsuarioAutenticado(auth).getLojaAssociada();
+        Revenda revendaUsuarioAutenticado = getUsuarioAutenticado(userPrincipal).getLojaAssociada();
 
         if (revendaUsuarioAutenticado == null){
             erro = ResponseEntity.badRequest().body("O usuário deve ter uma loja associada para atender uma oportunidade.");
@@ -126,10 +126,10 @@ public class OportunidadeController {
     @Operation(summary = "Realiza a edição de uma oportunidade a partir de seu ID. Com validação se o usuário autenticado está na mesma revendedora da oportunidade.", description = NivelAcessoConfig.NIVEL_GERENTE)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_GERENTE + "')")
     @PutMapping("/editar/revenda/{id}")
-    public ResponseEntity<Object> editarOportunidadeEmRevenda(@PathVariable Long id, @RequestBody @Validated Oportunidade oportunidade, Authentication auth) {
+    public ResponseEntity<Object> editarOportunidadeEmRevenda(@PathVariable Long id, @RequestBody @Validated Oportunidade oportunidade, @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         ResponseEntity<Object> erro = validarOportunidade(false, oportunidade, id);
-        Usuario usuarioAutenticado = getUsuarioAutenticado(auth);
+        Usuario usuarioAutenticado = getUsuarioAutenticado(userPrincipal);
         Long idRevendaUsuarioAutenticado = (usuarioAutenticado.getLojaAssociada() != null) ? usuarioAutenticado.getLojaAssociada().getId() : null;
 
         if(!Objects.equals(id, idRevendaUsuarioAutenticado)){
@@ -142,12 +142,12 @@ public class OportunidadeController {
     @Operation(summary = "Realiza a edição de uma oportunidade a partir de seu ID. Com validação se o usuário autenticado está relacionado a oportunidade.", description = NivelAcessoConfig.NIVEL_ASSISTENTE)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_ASSISTENTE + "')")
     @PutMapping("/editar/associado/{id}")
-    public ResponseEntity<Object> editarOportunidadeAssociada(@PathVariable Long id, @RequestBody @Validated Oportunidade oportunidade, Authentication auth) {
+    public ResponseEntity<Object> editarOportunidadeAssociada(@PathVariable Long id, @RequestBody @Validated Oportunidade oportunidade, @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         ResponseEntity<Object> erro = validarOportunidade(false, oportunidade, id);
 
         if(erro == null) {
-            Long idUsuarioAutenticado = getUsuarioAutenticado(auth).getId();
+            Long idUsuarioAutenticado = getUsuarioAutenticado(userPrincipal).getId();
             Long idUsuarioOportunidade = (service.findById(id).getUsuarioAssociado() != null) ? service.findById(id).getUsuarioAssociado().getId() : null;
             Long idUsuarioOportunidadeNovo = (oportunidade.getUsuarioAssociado() != null) ? oportunidade.getUsuarioAssociado().getId() : null;
 
@@ -174,11 +174,8 @@ public class OportunidadeController {
         return (existe) ? ResponseEntity.ok().body("Oportunidade deletada com sucesso.") : ResponseEntity.notFound().build();
     }
 
-    private Usuario getUsuarioAutenticado(Authentication auth) {
-
-        String emailAutenticado = ((UserPrincipal) auth.getPrincipal()).getUsername();
-
-        return usuarioService.findByEmail(emailAutenticado);
+    private Usuario getUsuarioAutenticado(UserPrincipal userPrincipal) {
+        return usuarioService.findByEmail(userPrincipal.getUsername());
     }
 
     private ResponseEntity<Object> validarOportunidade(boolean isCadastro, Oportunidade oportunidade, Long id) {

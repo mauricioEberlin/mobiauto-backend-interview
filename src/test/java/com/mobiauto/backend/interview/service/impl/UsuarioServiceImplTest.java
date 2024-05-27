@@ -33,6 +33,8 @@ public class UsuarioServiceImplTest {
     RoleRepository roleRepository;
     Usuario usuario;
 
+    Usuario usuarioComId;
+
     List<Usuario> usuarios = new ArrayList<>();
 
     @BeforeEach
@@ -49,7 +51,20 @@ public class UsuarioServiceImplTest {
                         .build())
                 .build();
 
-        usuarios.add(usuario);
+        usuarioComId = Usuario.builder()
+                .id(1L)
+                .nome("teste")
+                .email("teste@email.com")
+                .senha("123")
+                .cargo(Cargo.ADMINISTRADOR)
+                .lojaAssociada(Revenda.builder()
+                        .id(1L)
+                        .cnpj("432432556")
+                        .nomeSocial("Revendedora Teste")
+                        .build())
+                .build();
+
+        usuarios.add(usuarioComId);
     }
 
     @Test
@@ -86,9 +101,9 @@ public class UsuarioServiceImplTest {
     void findAll() {
         when(repository.findAll()).thenReturn(usuarios);
 
-        List<Usuario> listUsuarios = repository.findAll();
+        List<Usuario> listUsuarios = service.findAll();
 
-        assertEquals(listUsuarios, usuarios);
+        assertEquals(usuarios, listUsuarios);
         verify(repository).findAll();
         verifyNoMoreInteractions(repository);
     }
@@ -97,9 +112,9 @@ public class UsuarioServiceImplTest {
     void findAllInRevenda() {
         when(repository.findAll().stream().filter(u -> Objects.equals((u.getLojaAssociada() != null) ? u.getLojaAssociada().getId() : null, usuario.getLojaAssociada().getId())).toList()).thenReturn(usuarios);
 
-        List<Usuario> listUsuarios = repository.findAll().stream().filter(u -> Objects.equals((u.getLojaAssociada() != null) ? u.getLojaAssociada().getId() : null, usuario.getLojaAssociada().getId())).toList();
+        List<Usuario> listUsuarios = service.findAllInRevenda(usuario.getLojaAssociada().getId());
 
-        assertEquals(listUsuarios, usuarios);
+        assertEquals(usuarios, listUsuarios);
         verify(repository).findAll();
         verifyNoMoreInteractions(repository);
     }
@@ -109,21 +124,51 @@ public class UsuarioServiceImplTest {
         when(repository.save(usuario)).thenReturn(usuario);
 
         Usuario usuarioRetornado = service.save(usuario);
-        assertEquals(usuarioRetornado, usuario);
+        assertEquals(usuario, usuarioRetornado);
+
         verify(repository).save(usuario);
-        verify(repository).findByEmail(usuario.getEmail());
+        verify(roleRepository).findAll();
         verifyNoMoreInteractions(repository);
     }
 
     @Test
-    void saveErroEmailExistente() {
-        when(repository.findByEmail(usuario.getEmail())).thenReturn(usuario);
+    void saveErroIdInformado() {
+        Error error = assertThrows(Error.class, () -> service.save(usuarioComId));
+        assertEquals("Tentativa de passar ID em cadastro.", error.getMessage());
 
-        Error error = assertThrows(Error.class, () -> service.save(usuario));
-        assertEquals("Esse e-mail já possuí cadastro.", error.getMessage());
+        verify(repository, never()).save(usuarioComId);
+        verifyNoMoreInteractions(repository);
+    }
 
-        verify(repository, never()).save(usuario);
-        verify(repository).findByEmail(usuario.getEmail());
+    @Test
+    void update() {
+        when(repository.findById(usuario.getId())).thenReturn(Optional.of(usuario));
+        when(repository.save(usuario)).thenReturn(usuario);
+
+        Usuario usuarioRetornado = service.update(usuario.getId(), usuario);
+        assertEquals(Optional.of(usuario).get(), usuarioRetornado);
+
+        verify(repository).save(usuario);
+        verify(repository).findById(usuario.getId());
+        verify(roleRepository).findAll();
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    void updateErroIdInformado() {
+        Error error = assertThrows(Error.class, () -> service.update(usuarioComId.getId(), usuarioComId));
+        assertEquals("Tentativa de passar ID ao editar.", error.getMessage());
+
+        verify(repository, never()).save(usuarioComId);
+        verify(repository, never()).findById(usuarioComId.getId());
+        verifyNoMoreInteractions(repository);
+    }
+
+    @Test
+    void delete() {
+        service.delete(usuario.getId());
+
+        verify(repository).deleteById(usuario.getId());
         verifyNoMoreInteractions(repository);
     }
 

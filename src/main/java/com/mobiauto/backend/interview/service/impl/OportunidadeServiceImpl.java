@@ -21,8 +21,7 @@ public class OportunidadeServiceImpl implements OportunidadeService {
     private final OportunidadeRepository repository;
 
     public Oportunidade findById(Long id) {
-        Optional<Oportunidade> obj = repository.findById(id);
-        return obj.orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public List<Oportunidade> findAll() {
@@ -36,11 +35,11 @@ public class OportunidadeServiceImpl implements OportunidadeService {
     public Oportunidade save(Oportunidade obj) {
 
         if(obj.getId() != null){
-            throw new Error("Tentativa de passar ID em cadastro");
+            throw new Error("Tentativa de passar ID em cadastro.");
         }
 
         if(obj.getUsuarioAssociado() != null && obj.getDataAtribuicao() == null){
-            obj.setDataAtribuicao(LocalDate.now(ZoneId.of("BET")));
+            obj.setDataAtribuicao(LocalDate.now(ZoneId.of("America/Sao_Paulo")));
         }
 
         obj.setStatus(Status.NOVO);
@@ -64,13 +63,13 @@ public class OportunidadeServiceImpl implements OportunidadeService {
         objBanco.setUsuarioAssociado(obj.getUsuarioAssociado());
 
         if(obj.getUsuarioAssociado() != null && obj.getDataAtribuicao() == null){
-            objBanco.setDataAtribuicao(LocalDate.now(ZoneId.of("BET")));
+            objBanco.setDataAtribuicao(LocalDate.now(ZoneId.of("America/Sao_Paulo")));
         }else{
             objBanco.setDataAtribuicao(obj.getDataAtribuicao());
         }
 
         if(obj.getStatus() == Status.CONCLUIDO && obj.getDataConclusao() == null && obj.getUsuarioAssociado() != null) {
-            objBanco.setDataConclusao(LocalDate.now(ZoneId.of("BET")));
+            objBanco.setDataConclusao(LocalDate.now(ZoneId.of("America/Sao_Paulo")));
             objBanco.setMotivoConclusao("Concluído por " + objBanco.getUsuarioAssociado().getNome() + ". Motivo: " + obj.getMotivoConclusao());
         }else{
             objBanco.setMotivoConclusao(obj.getMotivoConclusao());
@@ -80,8 +79,6 @@ public class OportunidadeServiceImpl implements OportunidadeService {
     }
 
     public void delete(Long id) {
-        findById(id);
         repository.deleteById(id);
     }
-
 }

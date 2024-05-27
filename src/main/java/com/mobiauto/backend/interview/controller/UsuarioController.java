@@ -12,7 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,9 +43,9 @@ public class UsuarioController {
     @Operation(summary = "Realiza a busca de todos os usuários cadastrados na revendedora do usuário autenticado.", description = NivelAcessoConfig.NIVEL_GERENTE)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_GERENTE + "')")
     @GetMapping("/revenda")
-    public ResponseEntity<Object> buscarUsuariosDaRevenda(Authentication auth) {
+    public ResponseEntity<Object> buscarUsuariosDaRevenda(@AuthenticationPrincipal UserPrincipal userPrincipal) {
 
-        Revenda revendaUsuarioAutenticado = getUsuarioAutenticado(auth).getLojaAssociada();
+        Revenda revendaUsuarioAutenticado = getUsuarioAutenticado(userPrincipal).getLojaAssociada();
 
         return (revendaUsuarioAutenticado != null) ?
                 ResponseEntity.ok(service.findAllInRevenda(revendaUsuarioAutenticado.getId())) :
@@ -74,10 +74,10 @@ public class UsuarioController {
     @Operation(summary = "Realiza o cadastro de um usuário na revendedora do usuário autenticado.", description = NivelAcessoConfig.NIVEL_GERENTE)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_GERENTE + "')")
     @PostMapping("/cadastrar/revenda")
-    public ResponseEntity<Object> cadastrarUsuarioEmRevenda(@RequestBody @Validated Usuario usuario, Authentication auth) {
+    public ResponseEntity<Object> cadastrarUsuarioEmRevenda(@RequestBody @Validated Usuario usuario, @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         ResponseEntity<Object> erro = validarUsuario(true, usuario, null);
-        Usuario usuarioAutenticado = getUsuarioAutenticado(auth);
+        Usuario usuarioAutenticado = getUsuarioAutenticado(userPrincipal);
 
         if(usuarioAutenticado.getLojaAssociada() == null) {
             erro = ResponseEntity.badRequest().body("O usuário precisa ter uma loja associada para realizar o cadastro.");
@@ -101,10 +101,10 @@ public class UsuarioController {
     @Operation(summary = "Realiza a edição do usuário a partir de seu ID. Essa rota também valida se o usuário autenticado está na mesma revendedora.", description = NivelAcessoConfig.NIVEL_PROPRIETARIO)
     @PreAuthorize("hasRole('" + NivelAcessoConfig.NIVEL_PROPRIETARIO + "')")
     @PutMapping("/editar/revenda/{id}")
-    public ResponseEntity<Object> editarUsuarioEmRevenda(@PathVariable Long id, @RequestBody @Validated Usuario usuario, Authentication auth) {
+    public ResponseEntity<Object> editarUsuarioEmRevenda(@PathVariable Long id, @RequestBody @Validated Usuario usuario, @AuthenticationPrincipal UserPrincipal userPrincipal) {
 
         ResponseEntity<Object> erro = validarUsuario(false, usuario, id);
-        Usuario usuarioAutenticado = getUsuarioAutenticado(auth);
+        Usuario usuarioAutenticado = getUsuarioAutenticado(userPrincipal);
         Long idRevendaUsuarioAutenticado = usuarioAutenticado.getLojaAssociada().getId();
         Long idRevendaUsuarioNovo = service.findById(id).getLojaAssociada().getId();
 
@@ -125,10 +125,8 @@ public class UsuarioController {
         return (existe) ? ResponseEntity.ok().body("Usuário deletado com sucesso.") : ResponseEntity.notFound().build();
     }
 
-    private Usuario getUsuarioAutenticado(Authentication auth) {
-
-        String emailAutenticado = ((UserPrincipal) auth.getPrincipal()).getUsername();
-        return service.findByEmail(emailAutenticado);
+    private Usuario getUsuarioAutenticado(UserPrincipal userPrincipal) {
+        return service.findByEmail(userPrincipal.getUsername());
     }
 
     private ResponseEntity<Object> validarUsuario(boolean isCadastro, Usuario usuario, Long id) {
