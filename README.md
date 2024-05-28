@@ -1,13 +1,15 @@
-#Gestão de revendas
+# Gestão de revendas
 
 ### Introdução
 
-Este projeto de avaliação da Mobiauto consiste em uma ferramenta de gestão de revendas de veículos.
+O projeto de avaliação da Mobiauto consiste em uma ferramenta de gestão de revendas de veículos.
 O objetivo é tornar esse processo de revenda mais eficiente, utilizando um sistema de cadastro de usuários, revendedoras e oportunidades de revenda, que são atendidos pelos funcionários da loja. 
-As oportunidades são distribuidas automaticamente aos funcionários que ficaram sem receber uma tarefa por mais tempo.
-Assim que a oportunidade é concluída, ele deve fornecer o motivo de conlusão e em seguida  o horário da finalização é registrada.
+As oportunidades são distribuídas automaticamente aos funcionários que ficaram sem receber uma tarefa por mais tempo.
+Assim que a oportunidade é concluída, ele deve fornecer o motivo de conlusão e em seguida o horário da finalização é registrada.
 A aplicação utiliza **Basic Authentication**, precisando informar email e senha do usuário antes de realizar as requisições.
 Foi utilizado o banco de dados integrado **H2** por ser um projeto de demonstração.
+
+#### Vídeo de demonstração: 
 
 ### Pré-requisitos
 
@@ -28,8 +30,7 @@ Foi utilizado o banco de dados integrado **H2** por ser um projeto de demonstra�
 
 ### Dependências utilidadas
 
-* Versão do Spring Boot: 3.2.5
-
+**Versão do Spring Boot: 3.2.5**
 * H2
 * Lombok
 * Spring Boot Starter Test
@@ -47,45 +48,38 @@ Para executar o teste basta acessar a pasta raiz do projeto e clicar na opção 
 As responsabilidades da aplicação foram divididas entre componentes, com nomenclaturas que mais se adequa ao REST.
 Os componentes são: 
 
-#### Model
-
+* Model
 Esse pacote é responsável pelas entidades existentes na aplicação. As principais são Usuario, Revenda e Oportunidade.
 
-#### Repository
-
+* Repository
 Interfaces que se comunicam diretamente com o banco de dados, contendo regras de negócio como fazer consultas, alterar ou excluir dados.
 
-#### Service
-
+* Service
 Comunicando com o Repository, é responsável por processar dados, como a verificação se o email informado pelo usuário já existe no sistema.
 
-#### Controller
-
+* Controller
 Responsável pela preparação dos dados e pelo direcionamento das ordens recebidas pelo usuário que utiliza o sistema. Todos os endpoins se localizam nesse pacote.
 
-#### Security
-
+* Security
 Responsável pelo serviço de autenticação do projeto. Aqui ocorre a validação do email e senha informado pelo usuário para saber se ele possuí acesso ao sistema. Após esse processo o usuário terá "Rótulos" que indicam quais funções do sistema ele tem ou não tem acesso (gerando erro status 403). Esses rótulos são, em nível de acesso, respectivamente: ADMINISTRADOR, PROPRIETARIO, GERENTE e ASSISTENTE.
 Este sistema utiliza o Basic Authentication.
 
-#### Config
-
+* Config
 Aqui estão armazenados as constantes do projeto, afim de facilitar alterações futuras.
 
-#### Jobs
-
+* Jobs
 Pacote responsável por realizar funções logo ao iniciar o projeto, como o cadastro do administrador.
 
 ### Variáveis de ambiente
 
 As variáveis de ambiente estão localizadas na pasta *resources* no arquivo *application.properties*. Atualmente com os valores padrão.
 
-`spring.datasource.username=sa` Username do banco de dados.
-`spring.datasource.password=` Senha do banco de dados.
-`spring.h2.console.enabled=true` Exibir console na rota informada.
-`spring.h2.console.path=/h2-console` Rota do console.
-`spring.jpa.show-sql=false` Exibir a criação do banco de dados no log ao iniciar a aplicação.
-`spring.jpa.properties.hibernate.format_sql=false` Formatar de forma mais compreensível o log de criação do banco.
+* `spring.datasource.username=sa` Username do banco de dados.
+* `spring.datasource.password=` Senha do banco de dados.
+* `spring.h2.console.enabled=true` Exibir console na rota informada.
+* `spring.h2.console.path=/h2-console` Rota do console.
+* `spring.jpa.show-sql=false` Exibir a criação do banco de dados no log ao iniciar a aplicação.
+* `spring.jpa.properties.hibernate.format_sql=false` Formatar de forma mais compreensível o log de criação do banco.
 
 ### Contato
 
