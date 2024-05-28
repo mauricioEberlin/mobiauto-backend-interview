@@ -9,7 +9,7 @@ Assim que a oportunidade é concluída, ele deve fornecer o motivo de conlusão 
 A aplicação utiliza **Basic Authentication**, precisando informar email e senha do usuário antes de realizar as requisições.
 Foi utilizado o banco de dados integrado **H2** por ser um projeto de demonstração.
 
-#### Vídeo de demonstração: 
+#### [Vídeo de demonstração](https://youtu.be/whZWoRq-8Ig)
 
 ### Pré-requisitos
 
@@ -48,26 +48,26 @@ Para executar o teste basta acessar a pasta raiz do projeto e clicar na opção 
 As responsabilidades da aplicação foram divididas entre componentes, com nomenclaturas que mais se adequa ao REST.
 Os componentes são: 
 
-* Model
+* Model <br />
 Esse pacote é responsável pelas entidades existentes na aplicação. As principais são Usuario, Revenda e Oportunidade.
 
-* Repository
+* Repository <br />
 Interfaces que se comunicam diretamente com o banco de dados, contendo regras de negócio como fazer consultas, alterar ou excluir dados.
 
-* Service
+* Service <br />
 Comunicando com o Repository, é responsável por processar dados, como a verificação se o email informado pelo usuário já existe no sistema.
 
-* Controller
+* Controller <br />
 Responsável pela preparação dos dados e pelo direcionamento das ordens recebidas pelo usuário que utiliza o sistema. Todos os endpoins se localizam nesse pacote.
 
-* Security
+* Security <br />
 Responsável pelo serviço de autenticação do projeto. Aqui ocorre a validação do email e senha informado pelo usuário para saber se ele possuí acesso ao sistema. Após esse processo o usuário terá "Rótulos" que indicam quais funções do sistema ele tem ou não tem acesso (gerando erro status 403). Esses rótulos são, em nível de acesso, respectivamente: ADMINISTRADOR, PROPRIETARIO, GERENTE e ASSISTENTE.
 Este sistema utiliza o Basic Authentication.
 
-* Config
+* Config <br />
 Aqui estão armazenados as constantes do projeto, afim de facilitar alterações futuras.
 
-* Jobs
+* Jobs <br />
 Pacote responsável por realizar funções logo ao iniciar o projeto, como o cadastro do administrador.
 
 ### Variáveis de ambiente
@@ -83,5 +83,5 @@ As variáveis de ambiente estão localizadas na pasta *resources* no arquivo *ap
 
 ### Contato
 
-E-mail: mauricio.eberlin@gmail.com
-[LinkedIn](https://www.linkedin.com/in/mauricioeb/)
+* E-mail: mauricio.eberlin@gmail.com
+* [LinkedIn](https://www.linkedin.com/in/mauricioeb/)
