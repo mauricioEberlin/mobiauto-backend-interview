@@ -1,0 +1,809 @@
+{
+	"info": {
+		"_postman_id": "5439bfda-7a80-4cad-a424-6893e924f810",
+		"name": "Mobiauto Entrevista",
+		"description": "Autenticação: Basic\n\nUsername: [admin@email.com](https://mailto:admin@email.com)\n\nPassword: 9090",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4345119"
+	},
+	"item": [
+		{
+			"name": "usuarios",
+			"item": [
+				{
+					"name": "usuarios.buscarTodos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuarios.buscarPorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuarios.buscarUsuariosDaRevenda",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "9090",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@email.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios/revenda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios",
+								"revenda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuarios.cadastrar",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "9090",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@email.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Mauricio\",\r\n    \"email\": \"mauricio@email.com\",\r\n    \"senha\": \"123654\",\r\n    \"cargo\": \"ASSISTENTE\",\r\n    \"lojaAssociada\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios/cadastrar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios",
+								"cadastrar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuarios.cadastrarEmRevenda",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "9090",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@email.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Mauricio\",\r\n    \"email\": \"mauricio@email.com\",\r\n    \"senha\": \"123654\",\r\n    \"cargo\": \"ASSISTENTE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios/cadastrar/revenda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios",
+								"cadastrar",
+								"revenda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuarios.editar",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "9090",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@email.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Administrador\",\r\n    \"email\": \"admin@email.com\",\r\n    \"cargo\": \"ADMINISTRADOR\",\r\n    \"lojaAssociada\": {\r\n        \"id\": 1,\r\n        \"cnpj\": \"4921041-02\",\r\n        \"nomeSocial\": \"ADM Revendas\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios/editar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios",
+								"editar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuarios.editarEmRevenda",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "9090",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@email.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Mauricio\",\r\n    \"email\": \"mauricio@email.com\",\r\n    \"senha\": \"9090\",\r\n    \"cargo\": \"ASSISTENTE\",\r\n    \"lojaAssociada\": {\r\n        \"id\": 1,\r\n        \"cnpj\": \"4921041-02\",\r\n        \"nomeSocial\": \"ADM Revendas\"\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios/editar/revenda/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios",
+								"editar",
+								"revenda",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usuarios.deletar",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "9090",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@email.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/usuarios/deletar/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"usuarios",
+								"deletar",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "# /api/usuarios",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "revendas",
+			"item": [
+				{
+					"name": "revendas.buscarTodas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/revendas",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"revendas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revendas.buscarPorId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/revendas/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"revendas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revendas.cadastrar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cnpj\": \"4921041-02\",\r\n    \"nomeSocial\": \"ADM Revendas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/revendas/cadastrar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"revendas",
+								"cadastrar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revendas.editar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"cnpj\": \"4921041-03\",\r\n    \"nomeSocial\": \"ADM Revendas\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/revendas/editar/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"revendas",
+								"editar",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "revendas.deletar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/revendas/deletar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"revendas",
+								"deletar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "/api/revendas",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "oportunidades",
+			"item": [
+				{
+					"name": "oportunidades.buscarTodos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.buscarPorId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.buscarOportunidadesDaRevenda",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/revenda",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"revenda"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.cadastrar",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"NOVO\",\r\n    \"nomeCliente\": \"Danny\",\r\n    \"emailCliente\": \"danny@email.com\",\r\n    \"telefoneCliente\": \"11962634556\",\r\n    \"marcaVeiculo\": \"Peugeot\",\r\n    \"modeloVeiculo\": \"206\",\r\n    \"versaoVeiculo\": \"1.0\",\r\n    \"anoVeiculo\": 2001,\r\n    \"dataAtribuicao\": null,\r\n    \"dataConclusao\": null,\r\n    \"motivoConclusao\": \"\",\r\n    \"lojaAssociada\": null,\r\n    \"usuarioAssociado\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/cadastrar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"cadastrar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.atender",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "9090",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin@email.com",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"NOVO\",\r\n    \"nomeCliente\": \"Danny\",\r\n    \"emailCliente\": \"danny@email.com\",\r\n    \"telefoneCliente\": \"11962634556\",\r\n    \"marcaVeiculo\": \"Peugeot\",\r\n    \"modeloVeiculo\": \"206\",\r\n    \"versaoVeiculo\": \"1.0\",\r\n    \"anoVeiculo\": 2001,\r\n    \"dataAtribuicao\": null,\r\n    \"dataConclusao\": null,\r\n    \"motivoConclusao\": \"\",\r\n    \"lojaAssociada\": null,\r\n    \"usuarioAssociado\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/atender",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"atender"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.editar",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"NOVO\",\r\n    \"nomeCliente\": \"Danny\",\r\n    \"emailCliente\": \"danny@email.com\",\r\n    \"telefoneCliente\": \"11962634556\",\r\n    \"marcaVeiculo\": \"Peugeot\",\r\n    \"modeloVeiculo\": \"206\",\r\n    \"versaoVeiculo\": \"1.0\",\r\n    \"anoVeiculo\": 2001,\r\n    \"dataAtribuicao\": null,\r\n    \"dataConclusao\": null,\r\n    \"motivoConclusao\": \"\",\r\n    \"lojaAssociada\": null,\r\n    \"usuarioAssociado\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/editar/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"editar",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.editarEmRevenda",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"NOVO\",\r\n    \"nomeCliente\": \"Danny\",\r\n    \"emailCliente\": \"danny@email.com\",\r\n    \"telefoneCliente\": \"11962634556\",\r\n    \"marcaVeiculo\": \"Peugeot\",\r\n    \"modeloVeiculo\": \"206\",\r\n    \"versaoVeiculo\": \"1.0\",\r\n    \"anoVeiculo\": 2001,\r\n    \"dataAtribuicao\": null,\r\n    \"dataConclusao\": null,\r\n    \"motivoConclusao\": \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/editar/revenda/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"editar",
+								"revenda",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.editarOportunidadeAssociada",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"NOVO\",\r\n    \"nomeCliente\": \"Danny\",\r\n    \"emailCliente\": \"danny@email.com\",\r\n    \"telefoneCliente\": \"11962634556\",\r\n    \"marcaVeiculo\": \"Peugeot\",\r\n    \"modeloVeiculo\": \"206\",\r\n    \"versaoVeiculo\": \"1.0\",\r\n    \"anoVeiculo\": 2001,\r\n    \"dataAtribuicao\": null,\r\n    \"dataConclusao\": null,\r\n    \"motivoConclusao\": \"\",\r\n    \"lojaAssociada\": null,\r\n    \"usuarioAssociado\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/editar/associado/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"editar",
+								"associado",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "oportunidades.deletar",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/oportunidades/deletar/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"oportunidades",
+								"deletar",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "/api/oportunidades"
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "username",
+				"value": "{{emailAdmin}}",
+				"type": "string"
+			},
+			{
+				"key": "password",
+				"value": "{{senhaAdmin}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "emailAdmin",
+			"value": "admin@email.com",
+			"type": "string"
+		},
+		{
+			"key": "senhaAdmin",
+			"value": "9090"
+		}
+	]
+}
